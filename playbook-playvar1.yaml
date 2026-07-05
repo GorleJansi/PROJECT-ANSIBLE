@@ -1,0 +1,9 @@
+- name: play level varaible example
+  hosts: local
+  vars:
+    course : devops
+    tool : ansible
+  tasks:
+    - name: print play varaibles
+      debug:
+        msg: "jansi is learning {{ course }} now at tool {{ tool }}"  

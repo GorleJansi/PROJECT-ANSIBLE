@@ -1,0 +1,10 @@
+- name: create file in target hosts
+  hosts: targets
+  tasks: 
+    - name: creating file ...
+      copy:
+        src : ./ad-hoc1.yaml
+        dest : /home/ec2-user/d1
+        mode: '0600'
+  
+          
