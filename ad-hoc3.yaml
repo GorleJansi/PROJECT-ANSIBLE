@@ -1,0 +1,15 @@
+ansible hosts -i inventory.ini -m setup
+
+ansible hosts -i inventory.ini -m setup -a "filter=ansible_hostname"
+
+# The setup module collects facts like:
+# OS name
+# IP address
+# hostname
+# memory
+# CPU
+# disks
+# Python version
+# architecture
+# kernel
+# Output will be very large.

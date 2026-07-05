@@ -1,0 +1,10 @@
+- name: First ansible yaml file
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: printing messgae on terminal
+      debug: 
+        msg: "HELLO FROM YAML FILE 1"
+
+
+        

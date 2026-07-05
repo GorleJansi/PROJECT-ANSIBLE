@@ -1,0 +1,12 @@
+jansigorle@Jansis-MacBook-Air PROJECT-ANSIBLE % ansible localhost -m ping -c local
+[
+
+WARNING]: No inventory was parsed, only implicit localhost is available
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+
+
+# localhost = your machine
+# -m ping = use Ansible ping module
+# -c local = run locally, not SSH
