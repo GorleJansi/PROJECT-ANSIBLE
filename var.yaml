@@ -1,0 +1,33 @@
+---
+- name: different type of variables
+  hosts: local
+  gather_facts: false
+
+  vars:
+    city: "hyd"
+    age: 25
+    height: 175.5
+    isin_sklm: true
+
+    companies:
+      - factset
+      - cisco
+
+    roles:
+      factset: "sde"
+      cisco: "support"
+
+  tasks:
+    - name: print values of variables
+      debug:
+        msg: "jansi age is {{ age }} and height is {{ height }} works in city {{ city }} prev companies are {{ roles['factset'] }} in {{ companies[0] }} and {{ roles['cisco'] }} in {{ companies[1] }}"
+
+    - name: print companies one by one
+      debug:
+        msg: "company is {{ item }}"
+      loop: "{{ companies }}"
+
+    - name: print roles one by one
+      debug:
+        msg: "{{ item.key }} role is {{ item.value }}"
+      loop: "{{ roles | dict2items }}"

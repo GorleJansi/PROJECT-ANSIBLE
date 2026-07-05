@@ -1,0 +1,11 @@
+- name: based on ansible_facts execute the tasks
+  hosts: targets
+  gather_facts: true
+  vars:
+     install_nginx: True
+  tasks:
+     - name: execeting based on when condition
+       package:
+           name : nginx
+           state : present
+       when: ansible_facts["os_family"] == "RedHat"     

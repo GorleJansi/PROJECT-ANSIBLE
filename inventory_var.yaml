@@ -1,0 +1,12 @@
+- name: take var values from inventory file
+  hosts: local
+  vars:
+    st_name : jansi
+  tasks:
+     - name: varables from inventory
+       debug:
+          msg: "my name is {{ st_name }} i am from {{ city }} i am studying {{ course }}"
+
+          # use " " around whole line when using var with test 
+          # " my name is {{ name }}"
+          # " {{ name }}" 

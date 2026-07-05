@@ -1,0 +1,15 @@
+---
+- name: vars prompt example
+  hosts: targets
+  become: true
+
+  vars_prompt:
+    - name: pkg
+      prompt: "Enter package name"
+      private: false
+
+  tasks:
+    - name: "installing package {{ pkg }}"
+      dnf:
+        name: "{{ pkg }}"
+        state: present
