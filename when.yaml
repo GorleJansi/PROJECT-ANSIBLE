@@ -1,0 +1,19 @@
+- name: accessing list and  memebership checking in when condition
+  hosts: local
+  vars: 
+     list1:
+       - 1
+       - 20
+       - 68
+  tasks:
+    - name: accessing values from list
+      debug:
+        msg: "{{ list1 }} index 0 value in list1 is {{ list1[0] }} ,index 1 value in list1 is {{ list1[1] }} "
+    - name: accessing values from list using loop
+      debug:
+         msg: "item in list is {{ item }}"
+      loop: "{{ list1 }}"
+    - name: checking membership in list
+      debug:
+         msg: "20 is available"
+      when: " 20 in list1 "        

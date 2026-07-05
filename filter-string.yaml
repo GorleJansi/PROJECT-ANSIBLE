@@ -1,0 +1,28 @@
+- name: filters on variable of type string
+  hosts: local
+  vars:
+    student: "jansi"
+    age: 25
+    city: "SKLM"
+    state: "andhra pradesh"
+    x: "a,b"
+  tasks:
+    - name: convert string to lower case
+      debug:
+        msg: "{{ city | lower }}"
+
+    - name: convert string to upper case
+      debug:
+        msg: "{{ city | upper }}"
+
+    - name: convert string to capitalize
+      debug:
+        msg: "{{ state | capitalize }}"
+
+    - name: convert string to replace value
+      debug:
+        msg: "{{ state | replace('andhra', 'himachal') }}"
+           
+    - name: convert string to split
+      debug:
+        msg: "{{ x | split(',') }}"
