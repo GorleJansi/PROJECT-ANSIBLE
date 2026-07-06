@@ -1,0 +1,46 @@
+- name: user application configuration
+  hosts: user
+  become: yes
+  tasks:
+    - name: disable nodejs
+      command: dnf module disable nodejs
+      
+    - name: enable nodejs
+      command: dnf moduel enable nodejs
+
+    - name: install nodejs
+      package:
+        state: present
+        name: nodejs
+
+    - name: download app code to server
+      get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip 
+        dest: /tmp/user.zip
+
+    - name: create system user
+      user:
+        name: roboshop
+        shell: /sbin/nologin
+        home: /app
+        system: true
+        comment: "roboshop is system user" 
+
+    - name: unzip code in app directory
+      unarchive: 
+        src: /tmp/user.zip
+        dest: /app
+
+    - name: install dependencies
+      command: npm install
+
+    - name: copy the service to /etc/systemd/system/user.service
+      copy:
+        src: user.service
+        dest: etc/systemd/system/user.service
+      
+    - name: "service restart,enable,daemon-reload"
+      service:
+        state: restarted
+        enabled: true
+        daemon_reload: true
