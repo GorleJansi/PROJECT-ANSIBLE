@@ -23,8 +23,9 @@
             Name: "{{ item }}"
         loop: "{{ instances }}"
         register: ec2_output
+        
       - name: ouput of create ec2
-        debuug:
+        debug:
           msg: "{{ ec2_output }}"   
 
 
