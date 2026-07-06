@@ -3,9 +3,11 @@
   become: yes
   tasks:
     - name: disable nodejs
-      command: dnf module disable nodejs
+      command: dnf module disable nodejs -y
+
     - name: enable nodejs
-      command: dnf module enable nodejs
+      command: dnf module enable nodejs:20 -y
+
     - name: install nodejs
       package:
         state: present
@@ -18,7 +20,7 @@
 
     - name: create app directory
       file:
-        state: file
+        state: directory
         path: /app    
         
     - name: create system user
@@ -37,10 +39,13 @@
 
     - name: install dependencies
       command: npm install
+      args:
+        chdir: /app
 
     - name: copy the service
-      src: cart.service
-      dest: /etc/systemd/system/cart.service
+      copy:
+        src: cart.service
+        dest: /etc/systemd/system/cart.service
 
     - name: service restart daemon relaod, enable
       service:
