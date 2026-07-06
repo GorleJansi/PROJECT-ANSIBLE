@@ -3,8 +3,8 @@
   tasks:
     - name: copy repo file to /etc/yum.repo.d/mongodb.repo
       copy:
-        src: mongo.repo
-        dest: /etc/yum.repo.d/mongodb.repo
+        src: mongodb.repo
+        dest: /etc/yum.repos.d/mongodb.repo
     - name: downaload mongodb
       package:
         state: present
