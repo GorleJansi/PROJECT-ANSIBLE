@@ -1,0 +1,22 @@
+- name: configurtion of mongodb app on mongodb server
+  hosts: mongodb
+  tasks:
+    - name: copy repo file to /etc/yum.repo.d/mongodb.repo
+      copy:
+        src: mongo.repo
+        dest: /etc/yum.repo.d/mongodb.repo
+    - name: downaload mongodb
+      package:
+        state: present
+        name: mongodb-org
+    - name: allow remote connections
+      replace:
+         path: /etc/mongod.conf
+         regex: '127.0.0.0'
+         replace: '0.0.0.0'
+
+    - name: service start
+      service:
+         state: started
+         name: mongod        
+         enabled: yes
