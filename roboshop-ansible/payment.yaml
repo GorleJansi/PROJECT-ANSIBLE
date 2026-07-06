@@ -3,7 +3,13 @@
   become: yes
   tasks:
     - name: install python
-      command: dnf install python3 gcc python3-devel -y
+      dnf: 
+        state: present
+        name: "{{ item }}"
+      loop:
+       - python3
+       - gcc
+       - python3-devel
   
     - name: create system user
       user:
@@ -29,7 +35,10 @@
         dest: /app
         remote_src: true
     -  name: install dependencies
-       command: pip3 install -r requirements.txt
+      #  command: pip3 install -r requirements.txt
+       pip:
+        requirements: requirements.txt
+        executable: 3.9    
        args:
          chdir: /app
     - name: copy service file               
