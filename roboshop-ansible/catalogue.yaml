@@ -52,23 +52,21 @@
         dest: /etc/yum.repos.d/mongodb.repo       
 
     - name: install mongodb client
-      package:
-        state: present
+      ansible.builtin.package:
         name: mongodb-mongosh
+        state: present
 
-
-            
     - name: connnect to mongodb catalogue
-      ansible.builtin.command: mongosh mongodb.jansi.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+      ansible.builtin.command: mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
       register: catalogue_output
 
-    # - name: print catalogue output
-    #   ansible.builtin.debug:
-    #     msg: "{{ catalogue_output }}"
+  # - name: print catalogue output
+  #   ansible.builtin.debug:
+  #     msg: "{{ catalogue_output }}"
 
     - name: load products into mongodb
       ansible.builtin.shell: mongosh --host mongodb.daws86s.fun </app/db/master-data.js
-      when: catalogue_output.stdout | int < 0 
+      when: catalogue_output.stdout | int < 0
 
       # catalogue_output.stdout = -1 then data not loaded but this var is string to compare convert to int so pipe
 
