@@ -10,25 +10,30 @@
 
     - name: install nginx
       dnf:
-       state: present
-       name: nginx
+        state: present
+        name: nginx
 
     - name: remove default content
       file:
-       state: absent
-       path: /usr/share/nginx/html/ 
+        state: absent
+        path: /usr/share/nginx/html
 
     - name: delete old code in /tmp
       file:
-       state: absent
-       path: /tmp/frontend.zip
+        state: absent
+        path: /tmp/frontend.zip
 
-    - name: download code 
+    - name: download code
       get_url:
-      url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
-      dest: /tmp/frontend.zip  
+        url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+        dest: /tmp/frontend.zip
 
-    - name: unzip code in /app
+    - name: create nginx html directory
+      file:
+        state: directory
+        path: /usr/share/nginx/html
+
+    - name: unzip code in nginx html directory
       unarchive:
         src: /tmp/frontend.zip
         dest: /usr/share/nginx/html
@@ -42,11 +47,10 @@
     - name: copy nginx config
       copy:
         src: nginx.conf
-        dest: /etc/nginx/nginx.conf 
+        dest: /etc/nginx/nginx.conf
 
     - name: service restart
       service:
-       name: nginx
-       state: restarted
-       enabled: true
-                
+        name: nginx
+        state: restarted
+        enabled: true
