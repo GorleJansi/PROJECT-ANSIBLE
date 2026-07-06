@@ -7,8 +7,8 @@
     zone_id: "Z09439482Q9O4TJ24NLTV" # replace with your ID
     domain_name: "jansi.fun"
     #  we can pass instances through command line using -e
-    # instances: 
-    #  - mongodb
+    instances: 
+      - mongodb
     #  - redis
     #  - mysql
     # - rabbitmq
@@ -23,10 +23,10 @@
             Name: "{{ item }}"
         loop: "{{ instances }}"
         register: ec2_output
-        
+
       - name: ouput of create ec2
         debug:
           msg: "{{ ec2_output }}"   
-
+ 
 
   
