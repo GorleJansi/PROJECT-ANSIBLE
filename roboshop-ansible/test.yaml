@@ -12,6 +12,12 @@
       - redis
       - mysql
       - rabbitmq
+      - catalogue
+      - user
+      - cart
+      - shipping
+      - payment
+      - frontend
   tasks:
       - name: create ec2 instance
         amazon.aws.ec2_instance:
@@ -24,9 +30,9 @@
         loop: "{{ instances }}"
         register: ec2_output
 
-      # - name: ouput of create ec2
-      #   debug:
-      #     msg: "{{ ec2_output }}"   
+      - name: ouput of create ec2
+        debug:
+          msg: "{{ ec2_output }}"   
  
       - name: create r53 record for created instances
         amazon.aws.route53:
