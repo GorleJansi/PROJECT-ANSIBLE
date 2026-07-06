@@ -1,5 +1,6 @@
 - name: configurtion of mongodb app on mongodb server
   hosts: mongodb
+  become: yes
   tasks:
     - name: copy repo file to /etc/yum.repo.d/mongodb.repo
       copy:
