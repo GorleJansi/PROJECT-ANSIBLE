@@ -1,9 +1,0 @@
-- name: based on facts execute the tasks
-  hosts: local
-  vars:
-     install_nginx: True
-  tasks:
-     - name: execeting based on when condition
-       debug:
-          msg: "installed nginx"
-       when: install_nginx      

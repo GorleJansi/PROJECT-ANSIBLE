@@ -1,0 +1,80 @@
+- name: configure catlogue app on actalogue servers
+  hosts: catalogue
+  become: yes
+  tasks:
+# disbale,enable,install - install runtimes 
+    - name: disable nodejs service
+      command: dnf module disable nodejs -y
+
+    - name: enable nodejs service
+      command: dnf module enable nodejs:20 -y    
+
+    - name: install nodejs 
+      package: 
+         state: present
+         name: nodejs
+#  dowload app code to server
+    - name: download catalogue app artifact
+      get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+        dest: /tmp/catalogue.zip
+# create system user
+    - name: create system user roboshop
+      user:
+        comment: "system user"
+        name: roboshop
+        shell: /sbin/nologin
+        system: true     
+# create app directory       
+    - name: create app directory
+      file:
+       state: directory
+       path: /app
+# unzip app code in /app
+    - name: unzip code in app directory
+      unarchive:
+        src: /tmp/catalogue.zip
+        dest: /app
+        remote_src: true
+# install dependencies
+    - name: install dependencies
+      community.general.npm:
+        path: /app
+ # copy customer service file 
+    - name: copy custom catalogue service to /etc/systemd/system/catalogue.service
+      copy:
+       src: catalogue.service
+       dest: /etc/systemd/system/catalogue.service
+# copy repo of mongosh
+    - name: copy mongo repo
+      copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo       
+
+    - name: install mongodb client
+      package:
+        state: present
+        name: mongodb-mongosh
+
+
+            
+    - name: connnect to mongodb catalogue
+      ansible.builtin.command: mongosh mongodb.jansi.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+      register: catalogue_output
+
+    # - name: print catalogue output
+    #   ansible.builtin.debug:
+    #     msg: "{{ catalogue_output }}"
+
+    - name: load products into mongodb
+      ansible.builtin.shell: mongosh --host mongodb.daws86s.fun </app/db/master-data.js
+      when: catalogue_output.stdout | int < 0 
+
+      # catalogue_output.stdout = -1 then data not loaded but this var is string to compare convert to int so pipe
+
+    - name: service restart,enable,daemon-reload
+      service:
+        name: catalogue
+        state: started
+        enabled: true
+        daemon_reload: true  
