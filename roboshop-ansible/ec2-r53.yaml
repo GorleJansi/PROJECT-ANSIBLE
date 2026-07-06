@@ -2,7 +2,8 @@
   hosts: local
   connection: local
   vars:
-    ami_id: ami-09c813fb71547fc4f
+    aws_region: us-east-1
+    ami_id: ami-0220d79f3f480ecf5
     sg_id: sg-0708e7bc7b4f99963 # replace with your SG ID
     zone_id: "Z09439482Q9O4TJ24NLTV" # replace with your ID
     domain_name: "jansi.fun"
@@ -17,6 +18,7 @@
     amazon.aws.ec2_instance:
       name: "{{ item }}"
       instance_type: t3.micro
+      region: "{{ aws_region }}"
       security_group: "{{ sg_id }}"
       image_id: "{{ ami_id }}"
       tags:
