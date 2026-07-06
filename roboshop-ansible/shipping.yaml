@@ -1,0 +1,89 @@
+- name: shipping app configured on shipping servers
+  hosts: shipping
+  become: yes
+  tasks:
+    - name: install maven
+      dnf:
+        state: present
+        name: maven
+
+    - name: install mysql python libraries
+      ansible.builtin.pip:
+        executable: pip3.9
+        name: "{{ item }}"
+      loop:
+        - cryptography
+        - PyMySQL
+
+    - name: create system user
+      user:
+        shell: /sbin/nologin
+        home: /app
+        system: true
+        name: roboshop
+
+    - name: delete old temp code
+      file:
+        state: absent
+        path: /tmp/shipping.zip
+
+    - name: download app code
+      get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+        dest: /tmp/shipping.zip
+
+    - name: delete existing app directory to deploy new code
+      file:
+        state: absent
+        path: /app
+
+    - name: create app directory
+      file:
+        state: directory
+        path: /app
+
+    - name: unzip code to app directory
+      unarchive:
+        src: /tmp/shipping.zip
+        dest: /app
+        remote_src: true
+
+    - name: build shipping package
+      command: mvn clean package
+      args:
+        chdir: /app
+
+    - name: rename shipping jar
+      command: mv target/shipping-1.0.jar shipping.jar
+      args:
+        chdir: /app
+
+    - name: copy service
+      copy:
+        src: shipping.service
+        dest: /etc/systemd/system/shipping.service
+
+    - name: install mysql client
+      dnf:
+        state: present
+        name: mysql
+
+    - name: import shipping data into mysql
+      community.mysql.mysql_db:
+        state: import
+        name: all
+        login_host: mysql.jansi.fun
+        login_user: root
+        login_password: RoboShop@1
+        target: "{{ item }}"
+      loop:
+        - /app/db/schema.sql
+        - /app/db/app-user.sql
+        - /app/db/master-data.sql
+
+    - name: service restart,enable,daemon_reload
+      service:
+        name: shipping
+        state: restarted
+        enabled: true
+        daemon_reload: true
