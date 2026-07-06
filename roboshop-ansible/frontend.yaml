@@ -2,17 +2,51 @@
   hosts: frontend
   become: yes
   tasks:
-    - name: disbale default nginx
+    - name: disable default nginx
       command: dnf module disable nginx -y
+
     - name: enable nginx version specific
-      command: dnf module enable nginx -y
+      command: dnf module enable nginx:1.24 -y
+
     - name: install nginx
       dnf:
        state: present
        name: nginx
+
+    - name: remove default content
+      file:
+       state: absent
+       path: /usr/share/nginx/html/ 
+
+    - name: delete old code in /tmp
+      file:
+       state: absent
+       path: /tmp/frontend.zip
+
+    - name: download code 
+      get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+      dest: /tmp/frontend.zip  
+
+    - name: unzip code in /app
+      unarchive:
+        src: /tmp/frontend.zip
+        dest: /usr/share/nginx/html
+        remote_src: true
+
+    - name: delete old default config
+      file:
+        state: absent
+        path: /etc/nginx/nginx.conf
+
+    - name: copy nginx config
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf 
+
     - name: service restart
       service:
        name: nginx
-       state: started
+       state: restarted
        enabled: true
-               
+                
