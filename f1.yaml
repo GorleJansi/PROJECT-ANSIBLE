@@ -1,0 +1,14 @@
+- name: installing and starting nginx
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: installing nginx
+      package:
+        name: nginx
+        state: present
+    - name: service restart and enable at boot
+      service: 
+        name: nginx
+        state: started
+        enabled: true
